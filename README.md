@@ -2,6 +2,10 @@
 
 「대규모언어모델(LLM)을 활용한 빅데이터분석」 수업의 개인 실습 결과를 정리하는 저장소입니다.
 
+## 학습 기록
+
+- 전체 과정의 학습 내용과 다음 목표: [`learning_log.md`](learning_log.md)
+
 ## 원본 수업 자료
 
 - 공식 저장소: <https://github.com/GilbertMoon/llm-data-analysis-course>
