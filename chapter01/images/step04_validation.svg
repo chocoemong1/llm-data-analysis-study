@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#f6f8fa"/>
+  <style>.title{font:700 34px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#172b4d}.head{font:700 23px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#0969da}.body{font:18px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#24292f}.num{font:700 20px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#8250df}.ok{font:700 22px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#1a7f37}.small{font:17px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#57606a}</style>
+  <text x="60" y="62" class="title">STEP 4 Evidence · LLM 제안의 실제 데이터 검증</text>
+  <rect x="60" y="95" width="1080" height="180" rx="14" fill="#fff" stroke="#d0d7de"/>
+  <text x="90" y="137" class="head">검증 조건</text>
+  <text x="90" y="177" class="body">기간: 2026-01-01~2026-06-30 · 상태: completed</text>
+  <text x="90" y="214" class="body">상품금액: quantity × unit_price · 월별 주문 수: order_id 고유 개수</text>
+  <text x="90" y="251" class="small">7월은 8일까지만 존재하므로 제외 · 회계상 순매출이라고 표현하지 않음</text>
+  <rect x="60" y="305" width="520" height="330" rx="14" fill="#ddf4ff" stroke="#54aeff"/>
+  <text x="90" y="347" class="head">월별 검증값</text>
+  <text x="90" y="392" class="body">월      상품금액       주문 수     주문당 평균</text>
+  <text x="90" y="432" class="num">2026-01  17,423,000       22       791,954.55</text>
+  <text x="90" y="470" class="num">2026-02   9,749,000       17       573,470.59</text>
+  <text x="90" y="508" class="num">2026-03  13,429,000       14       959,214.29</text>
+  <text x="90" y="546" class="num">2026-04  17,553,000       23       763,173.91</text>
+  <text x="90" y="584" class="num">2026-05   8,063,000       11       733,000.00</text>
+  <text x="90" y="622" class="num">2026-06   2,826,000        4       706,500.00</text>
+  <rect x="620" y="305" width="520" height="330" rx="14" fill="#fff8c5" stroke="#d4a72c"/>
+  <text x="650" y="347" class="head">5월 → 6월 검증</text>
+  <text x="650" y="397" class="num">총 상품금액 변화: -5,237,000</text>
+  <text x="650" y="442" class="body">완료 주문 수: 11 → 4</text>
+  <text x="650" y="482" class="body">주문당 평균: 733,000 → 706,500</text>
+  <text x="650" y="532" class="body">카테고리 감소: 도서 -1,313,000</text>
+  <text x="650" y="570" class="body">뷰티 -1,082,000 · 스포츠 -841,000</text>
+  <text x="650" y="608" class="small">모든 카테고리 증감의 합 = -5,237,000</text>
+  <rect x="60" y="670" width="1080" height="75" rx="12" fill="#dafbe1" stroke="#4ac26b"/><text x="90" y="717" class="ok">최종 판단: 수정 후 사용 · 원인은 단정하지 않고 주문 수 감소를 다음 검증 우선순위로 설정</text>
+</svg>

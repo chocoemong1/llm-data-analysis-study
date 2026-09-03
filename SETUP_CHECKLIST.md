@@ -40,11 +40,11 @@
 - [x] Chapter 최종 파일 URL 제출 규칙 확인
 - [x] LLM 결과 검증과 개인정보·Secret 보호 원칙 확인
 - [x] `learning_log.md` 생성
-- [ ] Chapter 01 실습 시작
+- [x] Chapter 01 실습 완료
 
 ## 보안 확인
 
-- [ ] API Key, Token, Password, 실제 개인정보를 Prompt나 Public GitHub에 올리지 않음
-- [ ] `.env` 실제 값과 민감정보가 보이는 화면 캡처를 제출하지 않음
-- [ ] 제출 전에 Markdown, Notebook, 이미지에 Secret이 없는지 다시 확인
+- [x] API Key, Token, Password, 실제 개인정보를 Prompt나 Public GitHub에 올리지 않음
+- [x] `.env` 실제 값과 민감정보가 보이는 화면 캡처를 제출하지 않음
+- [x] 제출 전에 Markdown, Notebook, 이미지에 Secret이 없는지 다시 확인
 

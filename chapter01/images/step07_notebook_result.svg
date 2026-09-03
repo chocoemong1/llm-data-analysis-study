@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#0d1117"/>
+  <style>.title{font:700 32px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#f0f6fc}.head{font:700 22px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#58a6ff}.body{font:19px 'Noto Sans Mono','D2Coding',monospace;fill:#c9d1d9}.ok{font:700 22px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#3fb950}.warn{font:18px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#d29922}</style>
+  <text x="55" y="62" class="title">STEP 7 Evidence · Chapter 01 Notebook 실행 검증</text>
+  <rect x="55" y="100" width="1090" height="500" rx="14" fill="#161b22" stroke="#30363d"/>
+  <text x="85" y="145" class="head">Environment</text>
+  <text x="85" y="185" class="body">Python 3.12.3</text>
+  <text x="85" y="220" class="body">.../llm-data-analysis-course/.venv/bin/python</text>
+  <text x="85" y="275" class="head">Notebook</text>
+  <text x="85" y="315" class="body">notebooks/ch01_ai_data_analysis_intro.ipynb</text>
+  <text x="85" y="350" class="body">code_cells=2 · execution_counts=[1, 2] · cell_errors=0</text>
+  <text x="85" y="390" class="ok">status=PASS</text>
+  <text x="85" y="445" class="head">Data smoke test</text>
+  <text x="85" y="485" class="body">DATA_DIR=../data/raw · exists=True</text>
+  <text x="85" y="520" class="body">customers.shape=(150, 6)</text>
+  <text x="85" y="555" class="body">columns=[customer_id, name, gender, age, city, signup_date]</text>
+  <text x="55" y="645" class="warn">자동 실행 종료 시 heartbeat 포트 경고가 있었으나 Notebook 셀 오류는 0건. VS Code 커널에서 재확인 예정.</text>
+</svg>

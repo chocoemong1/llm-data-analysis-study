@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f6f8fa"/>
+  <style>.title{font:700 34px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#172b4d}.boxh{font:700 24px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#0969da}.body{font:18px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#24292f}.ok{font:700 20px 'Noto Sans KR','Malgun Gothic',sans-serif;fill:#1a7f37}</style>
+  <text x="60" y="65" class="title">STEP 2 Evidence · 데이터 구조와 키 연결</text>
+  <rect x="70" y="120" width="300" height="150" rx="14" fill="#fff" stroke="#54aeff"/><text x="95" y="160" class="boxh">customers · 150×6</text><text x="95" y="205" class="body">PK: customer_id</text><text x="95" y="238" class="body">age, city, signup_date</text>
+  <rect x="830" y="120" width="300" height="150" rx="14" fill="#fff" stroke="#54aeff"/><text x="855" y="160" class="boxh">products · 100×4</text><text x="855" y="205" class="body">PK: product_id</text><text x="855" y="238" class="body">category, price</text>
+  <rect x="70" y="390" width="380" height="170" rx="14" fill="#fff" stroke="#54aeff"/><text x="95" y="430" class="boxh">orders · 300×5</text><text x="95" y="475" class="body">PK: order_id · FK: customer_id</text><text x="95" y="508" class="body">order_date, order_status</text><text x="95" y="541" class="body">기간: 2025-07-09~2026-07-08</text>
+  <rect x="710" y="390" width="420" height="170" rx="14" fill="#fff" stroke="#54aeff"/><text x="735" y="430" class="boxh">order_items · 764×5</text><text x="735" y="475" class="body">PK: order_item_id</text><text x="735" y="508" class="body">FK: order_id, product_id</text><text x="735" y="541" class="body">quantity, unit_price</text>
+  <path d="M220 270 L220 390" stroke="#57606a" stroke-width="3"/><text x="235" y="338" class="body">customer_id</text>
+  <path d="M450 475 L710 475" stroke="#57606a" stroke-width="3"/><text x="520" y="458" class="body">order_id</text>
+  <path d="M980 270 L980 390" stroke="#57606a" stroke-width="3"/><text x="995" y="338" class="body">product_id</text>
+  <rect x="70" y="610" width="1060" height="65" rx="12" fill="#dafbe1" stroke="#4ac26b"/><text x="100" y="651" class="ok">PK 중복 0건 · 세 FK 미매칭 0건 · 선택 질문에 필요한 컬럼 결측 0건</text>
+</svg>
