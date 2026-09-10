@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650">
+  <style>
+    .title{font:700 30px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#f0f6fc}
+    .sub{font:17px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#8b949e}
+    .mono{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#c9d1d9}
+    .cmd{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#79c0ff}
+    .ok{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#3fb950}
+    .warn{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d29922}
+    .label{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d2a8ff}
+  </style>
+  <rect width="1400" height="650" rx="22" fill="#0d1117"/>
+  <rect width="1400" height="96" rx="22" fill="#161b22"/>
+  <circle cx="46" cy="48" r="10" fill="#ff7b72"/><circle cx="78" cy="48" r="10" fill="#d29922"/><circle cx="110" cy="48" r="10" fill="#3fb950"/>
+  <text x="145" y="44" class="title">Evidence 05 · 폴더 이동 후 경로 복구</text>
+  <text x="145" y="72" class="sub">오류 원인 → 최소 수정 → 재검증</text>
+  <rect x="42" y="122" width="1316" height="486" rx="14" fill="#010409" stroke="#30363d"/>
+  <text x="72" y="174" class="warn">발견</text>
+  <text x="72" y="208" class="mono">.venv/bin/activate에 이전 절대경로가 남아 있었음</text>
+  <text x="72" y="242" class="mono">/home/gem/research/LLM 수업 정리/.../.venv</text>
+  <text x="72" y="276" class="label">원인 판단</text>
+  <text x="72" y="310" class="mono">가상환경 활성화 스크립트가 생성 당시 경로를 저장함</text>
+  <text x="72" y="344" class="label">조치</text>
+  <text x="72" y="378" class="mono">재설치 없이 기존 .venv 실행 파일의 경로 참조만 새 위치로 교정</text>
+  <text x="72" y="412" class="label">재검증</text>
+  <text x="72" y="446" class="mono">VIRTUAL_ENV = /home/gem/research/학교 수업/LLM 수업/.../.venv</text>
+  <text x="72" y="480" class="mono">python = .../.venv/bin/python · jupyter = .../.venv/bin/jupyter</text>
+  <text x="72" y="514" class="ok">pip check: No broken requirements found.</text>
+  <text x="72" y="548" class="ok">공식 저장소 tracked file 변경 없음</text>
+</svg>

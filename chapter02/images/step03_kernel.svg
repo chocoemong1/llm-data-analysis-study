@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="570" viewBox="0 0 1400 570">
+  <style>
+    .title{font:700 30px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#f0f6fc}
+    .sub{font:17px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#8b949e}
+    .mono{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#c9d1d9}
+    .cmd{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#79c0ff}
+    .ok{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#3fb950}
+    .warn{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d29922}
+    .label{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d2a8ff}
+  </style>
+  <rect width="1400" height="570" rx="22" fill="#0d1117"/>
+  <rect width="1400" height="96" rx="22" fill="#161b22"/>
+  <circle cx="46" cy="48" r="10" fill="#ff7b72"/><circle cx="78" cy="48" r="10" fill="#d29922"/><circle cx="110" cy="48" r="10" fill="#3fb950"/>
+  <text x="145" y="44" class="title">Evidence 03 · Notebook 커널 검증</text>
+  <text x="145" y="72" class="sub">notebooks/ch02_environment_setup.ipynb · 전체 실행</text>
+  <rect x="42" y="122" width="1316" height="406" rx="14" fill="#010409" stroke="#30363d"/>
+  <text x="72" y="174" class="label">Python 실행 파일</text>
+  <text x="72" y="208" class="mono">/home/gem/research/학교 수업/LLM 수업/llm-data-analysis-course/.venv/bin/python</text>
+  <text x="72" y="242" class="label">현재 작업 폴더</text>
+  <text x="72" y="276" class="mono">/home/gem/research/학교 수업/LLM 수업/llm-data-analysis-course</text>
+  <text x="72" y="310" class="label">프로젝트 루트</text>
+  <text x="72" y="344" class="mono">/home/gem/research/학교 수업/LLM 수업/llm-data-analysis-course</text>
+  <text x="72" y="378" class="ok">데이터 폴더 존재 여부: True</text>
+  <text x="72" y="412" class="mono">Code cell execution_count: 1 → 2 → 3 → 4</text>
+  <text x="72" y="446" class="mono">Notebook code cells: 4</text>
+  <text x="72" y="480" class="ok">Notebook cell errors: 0 · PASS</text>
+</svg>

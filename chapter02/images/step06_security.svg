@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="570" viewBox="0 0 1400 570">
+  <style>
+    .title{font:700 30px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#f0f6fc}
+    .sub{font:17px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#8b949e}
+    .mono{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#c9d1d9}
+    .cmd{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#79c0ff}
+    .ok{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#3fb950}
+    .warn{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d29922}
+    .label{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d2a8ff}
+  </style>
+  <rect width="1400" height="570" rx="22" fill="#0d1117"/>
+  <rect width="1400" height="96" rx="22" fill="#161b22"/>
+  <circle cx="46" cy="48" r="10" fill="#ff7b72"/><circle cx="78" cy="48" r="10" fill="#d29922"/><circle cx="110" cy="48" r="10" fill="#3fb950"/>
+  <text x="145" y="44" class="title">Evidence 06 · Secret 보호 점검</text>
+  <text x="145" y="72" class="sub">.gitignore · Git 추적 여부 · 공개 전 점검</text>
+  <rect x="42" y="122" width="1316" height="406" rx="14" fill="#010409" stroke="#30363d"/>
+  <text x="72" y="174" class="cmd">$ git check-ignore -v .venv .env</text>
+  <text x="72" y="208" class="mono">.gitignore:8  .venv/  .venv</text>
+  <text x="72" y="242" class="mono">.gitignore:17 *.env   .env</text>
+  <text x="72" y="276" class="cmd">$ git ls-files .env .venv .env.example</text>
+  <text x="72" y="310" class="mono">.env.example</text>
+  <text x="72" y="344" class="label">판정</text>
+  <text x="72" y="378" class="ok">.env와 .venv는 Git 추적 대상이 아님</text>
+  <text x="72" y="412" class="ok">.env.example만 추적됨</text>
+  <text x="72" y="446" class="ok">API Key · Token · Password 실제 값 없음</text>
+  <text x="72" y="480" class="ok">공식 저장소 main...origin/main · tracked 변경 없음</text>
+</svg>

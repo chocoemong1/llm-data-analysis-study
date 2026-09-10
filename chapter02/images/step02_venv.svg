@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="660" viewBox="0 0 1400 660">
+  <style>
+    .title{font:700 30px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#f0f6fc}
+    .sub{font:17px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#8b949e}
+    .mono{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#c9d1d9}
+    .cmd{font:19px 'DejaVu Sans Mono','Noto Sans Mono',monospace;fill:#79c0ff}
+    .ok{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#3fb950}
+    .warn{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d29922}
+    .label{font:700 19px 'Noto Sans KR','DejaVu Sans',sans-serif;fill:#d2a8ff}
+  </style>
+  <rect width="1400" height="660" rx="22" fill="#0d1117"/>
+  <rect width="1400" height="96" rx="22" fill="#161b22"/>
+  <circle cx="46" cy="48" r="10" fill="#ff7b72"/><circle cx="78" cy="48" r="10" fill="#d29922"/><circle cx="110" cy="48" r="10" fill="#3fb950"/>
+  <text x="145" y="44" class="title">Evidence 02 · 가상환경과 Python 경로</text>
+  <text x="145" y="72" class="sub">활성화 후 실제 실행 파일 및 의존성 검증</text>
+  <rect x="42" y="122" width="1316" height="496" rx="14" fill="#010409" stroke="#30363d"/>
+  <text x="72" y="174" class="cmd">$ source .venv/bin/activate</text>
+  <text x="72" y="208" class="label">VIRTUAL_ENV</text>
+  <text x="72" y="242" class="mono">/home/gem/research/학교 수업/LLM 수업/llm-data-analysis-course/.venv</text>
+  <text x="72" y="276" class="cmd">$ command -v python</text>
+  <text x="72" y="310" class="mono">.../llm-data-analysis-course/.venv/bin/python</text>
+  <text x="72" y="344" class="cmd">$ python -c "import sys; print(sys.executable)"</text>
+  <text x="72" y="378" class="mono">.../llm-data-analysis-course/.venv/bin/python</text>
+  <text x="72" y="412" class="cmd">$ python -m pip --version</text>
+  <text x="72" y="446" class="mono">pip 26.2.1 · Python 3.12</text>
+  <text x="72" y="480" class="cmd">$ python -m pip check</text>
+  <text x="72" y="514" class="ok">No broken requirements found.</text>
+  <text x="72" y="548" class="mono">pandas 3.0.5 · numpy 2.5.2 · matplotlib 3.11.1</text>
+  <text x="72" y="582" class="mono">seaborn 0.13.2 · scikit-learn 1.9.0 · ipykernel 7.3.0</text>
+</svg>
