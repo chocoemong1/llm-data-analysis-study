@@ -1,3 +1,11 @@
 # Public source data is downloaded locally; retain source and checksum in docs.
 /data/raw/
 /docs/.preview/
+
+# Presentation materials are private and must remain local.
+**/*presentation*
+**/*발표*
+**/*대본*
+*.pptx
+*.ppt
+*.odp
