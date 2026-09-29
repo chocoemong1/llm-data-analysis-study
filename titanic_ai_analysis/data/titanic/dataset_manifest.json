@@ -1,0 +1,57 @@
+{
+  "dataset_name": "Titanic training set",
+  "course_artifact": "data/titanic/train.csv",
+  "distribution_policy": "Do not commit the generated CSV. Students download a pinned public copy locally with scripts/prepare_titanic_data.py.",
+  "source": {
+    "repository": "pandas-dev/pandas",
+    "repository_url": "https://github.com/pandas-dev/pandas",
+    "path": "doc/data/titanic.csv",
+    "pinned_commit": "54cf59b4fabae5db3b8c7b6b6003f9275596d5f2",
+    "raw_csv_url": "https://raw.githubusercontent.com/pandas-dev/pandas/54cf59b4fabae5db3b8c7b6b6003f9275596d5f2/doc/data/titanic.csv",
+    "repository_license": "BSD-3-Clause",
+    "license_note": "The pandas repository is BSD-3-Clause, but this project does not assume that all underlying third-party dataset rights are separately relicensed. The CSV is downloaded locally rather than redistributed here.",
+    "schema_reference": "https://www.kaggle.com/competitions/titanic/data"
+  },
+  "validation": {
+    "shape": [891, 12],
+    "columns": [
+      "PassengerId",
+      "Survived",
+      "Pclass",
+      "Name",
+      "Sex",
+      "Age",
+      "SibSp",
+      "Parch",
+      "Ticket",
+      "Fare",
+      "Cabin",
+      "Embarked"
+    ],
+    "passenger_id": {
+      "min": 1,
+      "max": 891,
+      "unique": true,
+      "ordered": true,
+      "missing": 0
+    },
+    "target": {
+      "column": "Survived",
+      "allowed_values": [0, 1],
+      "counts": {
+        "0": 549,
+        "1": 342
+      },
+      "missing": 0
+    },
+    "expected_missing_counts": {
+      "Age": 177,
+      "Cabin": 687,
+      "Embarked": 2
+    }
+  },
+  "preparation": {
+    "script": "scripts/prepare_titanic_data.py",
+    "transformation": "No feature transformation. Download, parse, validate, and write the same 12-column training structure locally."
+  }
+}

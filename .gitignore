@@ -20,3 +20,5 @@ venv/
 .DS_Store
 Thumbs.db
 
+# Reproducible course datasets downloaded by preparation scripts
+titanic_ai_analysis/data/titanic/train.csv
