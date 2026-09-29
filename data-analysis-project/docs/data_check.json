@@ -1,0 +1,71 @@
+{
+  "checked_at_utc": "2026-09-29T10:06:28+00:00",
+  "stage": "01_proposal: raw-data feasibility check; no cleaning applied",
+  "source_url": "https://archive.ics.uci.edu/dataset/352/online-retail",
+  "download_url": "https://archive.ics.uci.edu/static/public/352/online%2Bretail.zip",
+  "citation": "Chen, D. (2015). Online Retail. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33",
+  "license": "CC BY 4.0",
+  "workbook": "data/raw/Online Retail.xlsx",
+  "bytes": 23715344,
+  "sha256": "43465a06f2ccf7c8b5bd2892bc7defb52f97487934fe93b16ae4c3936424676d",
+  "sheet": "Online Retail",
+  "shape": [
+    541909,
+    8
+  ],
+  "columns": [
+    "InvoiceNo",
+    "StockCode",
+    "Description",
+    "Quantity",
+    "InvoiceDate",
+    "UnitPrice",
+    "CustomerID",
+    "Country"
+  ],
+  "date_range": [
+    "2010-12-01T08:26:00",
+    "2011-12-09T12:50:00"
+  ],
+  "missing_cells": {
+    "InvoiceNo": 0,
+    "StockCode": 0,
+    "Description": 1454,
+    "Quantity": 0,
+    "InvoiceDate": 0,
+    "UnitPrice": 0,
+    "CustomerID": 135080,
+    "Country": 0
+  },
+  "raw_quality_counts": {
+    "rows": 541909,
+    "cancellation_rows": 9288,
+    "nonpositive_quantity_rows": 10624,
+    "nonpositive_unit_price_rows": 2517,
+    "duplicate_rows_after_first": 5268
+  },
+  "planned_scope": {
+    "country": "United Kingdom",
+    "start_inclusive": "2011-01-01",
+    "end_exclusive": "2011-12-01",
+    "rows_before_cleaning": 431427,
+    "cancellation_rows": 6948,
+    "months_present": [
+      "2011-01",
+      "2011-02",
+      "2011-03",
+      "2011-04",
+      "2011-05",
+      "2011-06",
+      "2011-07",
+      "2011-08",
+      "2011-09",
+      "2011-10",
+      "2011-11"
+    ]
+  },
+  "environment": {
+    "python": "3.12.3",
+    "openpyxl": "3.1.5"
+  }
+}

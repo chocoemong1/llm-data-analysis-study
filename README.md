@@ -6,6 +6,11 @@
 
 - 전체 과정의 학습 내용과 다음 목표: [`learning_log.md`](learning_log.md)
 
+## 학기 프로젝트
+
+- [온라인 쇼핑몰 거래 분석](data-analysis-project/README.md)
+- [1차 프로젝트 기획서](data-analysis-project/01_proposal/01_proposal.md)
+
 ## 원본 수업 자료
 
 - 공식 저장소: <https://github.com/GilbertMoon/llm-data-analysis-course>
@@ -28,4 +33,3 @@
 4. 개인정보, API Key, Token, Secret이 없는지 확인합니다.
 5. `git status`, `git add`, `git commit`, `git push` 순서로 반영합니다.
 6. 저장소 루트가 아닌 해당 Chapter 최종 파일 URL을 제출합니다.
-
