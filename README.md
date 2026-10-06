@@ -11,6 +11,11 @@
 - [온라인 쇼핑몰 거래 분석](data-analysis-project/README.md)
 - [1차 프로젝트 기획서](data-analysis-project/01_proposal/01_proposal.md)
 
+## 추가 실습
+
+- [Titanic AI 분석 특강](titanic_ai_analysis/README.md)
+- [프로젝트 루트 찾기와 공용 모듈](path_utils_practice/README.md)
+
 ## 원본 수업 자료
 
 - 공식 저장소: <https://github.com/GilbertMoon/llm-data-analysis-course>
