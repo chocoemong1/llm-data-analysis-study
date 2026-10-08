@@ -1,0 +1,6 @@
+﻿question,result_table,next_question
+고객은 어느 도시에 많이 분포하는가?,customer_city,도시별 구매 금액도 차이가 있는가?
+어떤 카테고리의 상품이 많은가?,product_category,상품 수가 많은 카테고리가 매출도 높은가?
+카테고리별 매출은 어떻게 다른가?,category_sales,매출 차이가 수량 때문인가 단가 때문인가?
+월별 매출과 주문 수는 어떻게 변하는가?,monthly_sales,특정 월의 매출 변화는 어떤 카테고리 때문인가?
+구매 금액이 높은 고객은 누구인가?,customer_sales,고액 구매 고객은 반복 구매 고객인가?
