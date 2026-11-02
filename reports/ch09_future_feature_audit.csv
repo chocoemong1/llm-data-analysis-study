@@ -1,0 +1,10 @@
+﻿feature,available_at_prediction,contains_future,selected,reason
+category,True,False,True,예측 단위
+target_month_num,True,False,True,예측 대상 달력 정보
+lag1_sales,True,False,True,직전 달에 확정된 금액
+lag1_quantity,True,False,True,직전 달에 확정된 수량
+lag1_order_count,True,False,True,직전 달에 확정된 주문 수
+expanding_sales_mean,True,False,True,예측 이전 금액만의 평균
+total_sales,False,True,False,현재 Target
+total_quantity,False,True,False,예측 대상 월의 미래 정보
+order_count,False,True,False,예측 대상 월의 미래 정보

@@ -22,3 +22,7 @@ Thumbs.db
 
 # Reproducible course datasets downloaded by preparation scripts
 titanic_ai_analysis/data/titanic/train.csv
+
+# Chapter 09 internal diagnostics containing source identifiers
+reports/ch09_regression_model_data_internal.csv
+reports/ch09_regression_predictions_internal.csv

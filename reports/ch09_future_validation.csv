@@ -1,0 +1,7 @@
+﻿check,value,status
+future_feature_overlap,0,PASS
+strict_train_before_test,True,PASS
+selected_model_exists_in_train_cv,True,PASS
+final_test_contains_baseline,True,PASS
+final_test_contains_frozen_model,True,PASS
+final_test_rows_for_r2,14,PASS
