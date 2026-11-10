@@ -1,0 +1,16 @@
+﻿artifact,value,exists,shape_match,columns_match,content_match,status
+ch08_dataset_summary.csv,"shape=(4, 5)",True,True,True,True,PASS
+ch08_preprocessing_comparison.csv,"shape=(4, 5)",True,True,True,True,PASS
+ch08_key_duplicate_checks.csv,"shape=(4, 6)",True,True,True,True,PASS
+ch08_relationship_checks.csv,"shape=(3, 3)",True,True,True,True,PASS
+ch08_merge_checks.csv,"shape=(3, 7)",True,True,True,True,PASS
+ch08_line_total_check.csv,"shape=(1, 5)",True,True,True,True,PASS
+ch08_date_checks.csv,"shape=(1, 4)",True,True,True,True,PASS
+ch08_amount_scope_summary.csv,"shape=(3, 3)",True,True,True,True,PASS
+ch08_total_consistency_check.csv,"shape=(4, 5)",True,True,True,True,PASS
+ch08_project_validation.csv,"shape=(8, 4)",True,True,True,True,PASS
+ch08_category_sales.csv,"shape=(7, 4)",True,True,True,True,PASS
+ch08_monthly_sales.csv,"shape=(13, 4)",True,True,True,True,PASS
+ch08_customer_sales.csv,"shape=(100, 5)",True,True,True,True,PASS
+ch08_order_status_summary.csv,"shape=(3, 3)",True,True,True,True,PASS
+ch08_interpretation_notes.csv,"shape=(4, 4)",True,True,True,True,PASS

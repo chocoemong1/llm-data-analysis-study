@@ -92,6 +92,15 @@ def main() -> None:
     print("\n[최종 Validation]")
     print(result["project_validation"].to_string(index=False))
 
+    print("\n[입력 CSV 재로딩 검증]")
+    print(result["input_reload_validation"].to_string(index=False))
+
+    print("\n[저장 결과표 재로딩 검증]")
+    print(result["output_reload_validation"].to_string(index=False))
+
+    print("\n[그래프·보고서 파일 검증]")
+    print(result["file_validation"].to_string(index=False))
+
     print("\n[카테고리별 completed 주문 기준 금액 상위 5개]")
     print(result["analysis_tables"]["category_sales"].head().to_string(index=False))
 

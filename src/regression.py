@@ -31,6 +31,8 @@ from sklearn.model_selection import TimeSeriesSplit, cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from src.output_validation import validate_saved_csv_tables, validate_saved_files
+
 
 TARGET_COLUMN = "order_total"
 NUMERIC_FEATURES = ["order_month", "order_dayofweek", "age"]
@@ -886,6 +888,48 @@ def run_regression_analysis(
         checklist=checklist,
         report_dir=report_dir,
     )
+    output_reload_validation = validate_saved_csv_tables(
+        {
+            "model_data_internal": (
+                model_data,
+                output_paths["model_data_internal"],
+            ),
+            "split_summary": (split_summary, output_paths["split_summary"]),
+            "feature_audit": (feature_audit, output_paths["feature_audit"]),
+            "cv_summary": (cv_summary, output_paths["cv_summary"]),
+            "model_comparison": (
+                model_comparison,
+                output_paths["model_comparison"],
+            ),
+            "predictions_internal": (
+                prediction_result,
+                output_paths["predictions_internal"],
+            ),
+            "validation": (validation, output_paths["validation"]),
+            "checklist": (checklist, output_paths["checklist"]),
+        }
+    )
+    report_path = Path(report_dir) / "ch09_output_reload_validation.csv"
+    output_reload_validation.to_csv(
+        report_path, index=False, encoding="utf-8-sig"
+    )
+    file_validation = validate_saved_files(
+        [
+            output_paths["report"],
+            output_paths["actual_vs_predicted_figure"],
+            output_paths["residual_figure"],
+        ]
+    )
+    file_validation_path = Path(report_dir) / "ch09_file_validation.csv"
+    file_validation.to_csv(
+        file_validation_path, index=False, encoding="utf-8-sig"
+    )
+    if not output_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter09 저장 결과표 재로딩 검증 실패")
+    if not file_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter09 그래프·보고서 파일 검증 실패")
+    output_paths["output_reload_validation"] = report_path
+    output_paths["file_validation"] = file_validation_path
     return {
         "data": data,
         "model_data": model_data,
@@ -907,4 +951,6 @@ def run_regression_analysis(
         "validation": validation,
         "checklist": checklist,
         "output_paths": output_paths,
+        "output_reload_validation": output_reload_validation,
+        "file_validation": file_validation,
     }

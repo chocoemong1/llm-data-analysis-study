@@ -117,8 +117,30 @@ def prepare_visualization_data(
         "order_items.unit_price": int(order_items["unit_price"].isna().sum()),
         "order_items.line_total": int(order_items["line_total"].isna().sum()),
     }
-    if any(numeric_failures.values()):
-        raise ValueError(f"숫자형 변환 실패가 남아 있습니다: {numeric_failures}")
+    blocking_numeric_failures = {
+        key: value
+        for key, value in numeric_failures.items()
+        if key != "products.price" and value
+    }
+    if blocking_numeric_failures:
+        raise ValueError(
+            "금액 집계 입력의 숫자형 변환 실패가 남아 있습니다: "
+            f"{blocking_numeric_failures}"
+        )
+    numeric_quality = pd.DataFrame(
+        [
+            {
+                "column": column,
+                "missing_after_conversion": count,
+                "handling": (
+                    "가격 분포에서 제외하고 상품·주문 관계는 유지"
+                    if column == "products.price" and count
+                    else "분석 가능"
+                ),
+            }
+            for column, count in numeric_failures.items()
+        ]
+    )
 
     _check_unique_key(orders, "order_id", "orders")
     _check_unique_key(products, "product_id", "products")
@@ -132,6 +154,10 @@ def prepare_visualization_data(
         indicator=True,
     )
     unmatched_orders = order_sales.loc[order_sales["_merge"].ne("both")].copy()
+    if not unmatched_orders.empty:
+        raise ValueError(
+            f"주문 정보 미매칭 주문 상세가 {len(unmatched_orders)}행 남아 있습니다."
+        )
     order_sales = order_sales.drop(columns="_merge")
 
     completed_order_sales = order_sales.loc[
@@ -150,6 +176,10 @@ def prepare_visualization_data(
     unmatched_products = completed_sales_items.loc[
         completed_sales_items["_merge"].ne("both")
     ].copy()
+    if not unmatched_products.empty:
+        raise ValueError(
+            f"상품 정보 미매칭 완료 주문 상세가 {len(unmatched_products)}행 남아 있습니다."
+        )
     completed_sales_items = completed_sales_items.drop(columns="_merge")
     completed_sales_items["category"] = completed_sales_items["category"].fillna(
         "Unknown"
@@ -279,6 +309,7 @@ def prepare_visualization_data(
         "unmatched_orders": unmatched_orders,
         "unmatched_products": unmatched_products,
         "visualization_validation": validation,
+        "numeric_quality": numeric_quality,
     }
 
 
@@ -441,6 +472,30 @@ def create_all_figures(
     plot_top_customers(data["customer_sales"], paths["top_customers"], show=show)
     plot_order_status(data["order_status"], paths["order_status"], show=show)
     return list(paths.values())
+
+
+def save_visualization_tables(
+    data: dict[str, pd.DataFrame],
+    report_dir: str | Path = "reports",
+) -> dict[str, tuple[pd.DataFrame, Path]]:
+    """그래프의 원본 집계표와 Validation을 CSV로 저장합니다."""
+    output_dir = Path(report_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    table_map = {
+        "ch07_category_sales.csv": data["category_sales"],
+        "ch07_monthly_sales.csv": data["monthly_sales"],
+        "ch07_product_sales.csv": data["product_sales"],
+        "ch07_customer_sales.csv": data["customer_sales"],
+        "ch07_order_status.csv": data["order_status"],
+        "ch07_visualization_validation.csv": data["visualization_validation"],
+        "ch07_numeric_quality.csv": data["numeric_quality"],
+    }
+    saved: dict[str, tuple[pd.DataFrame, Path]] = {}
+    for filename, frame in table_map.items():
+        path = output_dir / filename
+        frame.to_csv(path, index=False, encoding="utf-8-sig")
+        saved[filename] = (frame, path)
+    return saved
 
 
 def build_visualization_report(summary: pd.DataFrame) -> str:

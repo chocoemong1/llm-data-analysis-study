@@ -1,0 +1,19 @@
+﻿check,value,status
+customers.shape,"(150, 6)",PASS
+customers.columns,6,PASS
+customers.customer_id_unique_nonnull,0,PASS
+products.shape,"(100, 5)",PASS
+products.columns,5,PASS
+products.product_id_unique_nonnull,0,PASS
+orders.shape,"(298, 7)",PASS
+orders.columns,7,PASS
+orders.order_id_unique_nonnull,0,PASS
+order_items.shape,"(745, 6)",PASS
+order_items.columns,6,PASS
+order_items.order_item_id_unique_nonnull,0,PASS
+customers.signup_date_reload_parse,0,PASS
+orders.order_date_reload_parse,0,PASS
+order_items.line_total_formula,0,PASS
+reload_fk:orders.customer_id exists in customers.customer_id,0,PASS
+reload_fk:order_items.order_id exists in orders.order_id,0,PASS
+reload_fk:order_items.product_id exists in products.product_id,0,PASS

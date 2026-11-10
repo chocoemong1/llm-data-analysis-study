@@ -1,0 +1,16 @@
+﻿artifact,value,exists,shape_match,columns_match,content_match,status
+model_data_internal,"shape=(248, 13)",True,True,True,True,PASS
+target_distribution,"shape=(2, 4)",True,True,True,True,PASS
+feature_audit,"shape=(17, 4)",True,True,True,True,PASS
+merge_checks,"shape=(2, 6)",True,True,True,True,PASS
+data_quality_checks,"shape=(11, 2)",True,True,True,True,PASS
+split_summary,"shape=(6, 5)",True,True,True,True,PASS
+validation_comparison,"shape=(3, 6)",True,True,True,True,PASS
+threshold_metrics,"shape=(13, 5)",True,True,True,True,PASS
+test_metrics,"shape=(1, 8)",True,True,True,True,PASS
+predictions_internal,"shape=(50, 7)",True,True,True,True,PASS
+predictions,"shape=(50, 6)",True,True,True,True,PASS
+confusion_matrix,"shape=(2, 2)",True,True,True,True,PASS
+classification_report,"shape=(5, 5)",True,True,True,True,PASS
+validation,"shape=(9, 3)",True,True,True,True,PASS
+checklist,"shape=(14, 2)",True,True,True,True,PASS

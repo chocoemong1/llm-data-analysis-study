@@ -37,7 +37,13 @@ from src.visualization import (
     create_all_figures,
     create_visualization_summary,
     prepare_visualization_data,
+    save_visualization_tables,
     setup_korean_font,
+)
+from src.output_validation import validate_saved_csv_tables, validate_saved_files
+from src.preprocessing import (
+    load_saved_processed_data,
+    validate_saved_processed_data,
 )
 
 
@@ -45,6 +51,9 @@ PROCESSED_DIR = PROJECT_ROOT / "data/processed"
 REPORT_DIR = PROJECT_ROOT / "reports"
 FIGURE_DIR = REPORT_DIR / "figures"
 SUMMARY_PATH = REPORT_DIR / "ch07_visualization_summary.md"
+INPUT_RELOAD_PATH = REPORT_DIR / "ch07_input_reload_validation.csv"
+OUTPUT_RELOAD_PATH = REPORT_DIR / "ch07_output_reload_validation.csv"
+FILE_VALIDATION_PATH = REPORT_DIR / "ch07_file_validation.csv"
 
 
 def main() -> None:
@@ -58,10 +67,22 @@ def main() -> None:
     else:
         print("사용 가능한 한글 폰트를 찾지 못했습니다. 그래프 한글 표시를 확인하세요.")
 
+    input_data = load_saved_processed_data(PROCESSED_DIR)
+    input_reload_validation = validate_saved_processed_data(
+        input_data, PROCESSED_DIR
+    )
+    input_reload_validation.to_csv(
+        INPUT_RELOAD_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not input_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 07 입력 CSV 재로딩 검증 실패")
+
     data = prepare_visualization_data(PROCESSED_DIR)
 
     print("\n[시각화용 집계 검증]")
     print(data["visualization_validation"].to_string(index=False))
+    print("\n[숫자형 품질과 처리 기준]")
+    print(data["numeric_quality"].to_string(index=False))
     print("주문 정보 미매칭 주문 상세:", len(data["unmatched_orders"]))
     print("상품 정보 미매칭 완료 주문 상세:", len(data["unmatched_products"]))
     print(
@@ -70,12 +91,25 @@ def main() -> None:
     )
 
     saved_figures = create_all_figures(data, FIGURE_DIR, show=False)
+    saved_tables = save_visualization_tables(data, REPORT_DIR)
 
     visualization_summary = create_visualization_summary()
     SUMMARY_PATH.write_text(
         build_visualization_report(visualization_summary),
         encoding="utf-8",
     )
+    output_reload_validation = validate_saved_csv_tables(saved_tables)
+    output_reload_validation.to_csv(
+        OUTPUT_RELOAD_PATH, index=False, encoding="utf-8-sig"
+    )
+    file_validation = validate_saved_files([*saved_figures, SUMMARY_PATH])
+    file_validation.to_csv(
+        FILE_VALIDATION_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not output_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 07 저장 집계표 재로딩 검증 실패")
+    if not file_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 07 그래프·보고서 파일 검증 실패")
 
     print("\n7장 시각화 완료")
     print("\n[생성한 그래프 파일]")
@@ -83,6 +117,12 @@ def main() -> None:
         print(f"- {path} ({path.stat().st_size} bytes)")
 
     print(f"\n[요약 보고서] {SUMMARY_PATH}")
+    print("\n[입력 CSV 재로딩 검증]")
+    print(input_reload_validation.to_string(index=False))
+    print("\n[저장 집계표 재로딩 검증]")
+    print(output_reload_validation.to_string(index=False))
+    print("\n[그래프·보고서 파일 검증]")
+    print(file_validation.to_string(index=False))
     print("\n[시각화 요약]")
     print(visualization_summary.to_string(index=False))
 

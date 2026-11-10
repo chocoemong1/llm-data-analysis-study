@@ -14,7 +14,14 @@ import numpy as np
 import pandas as pd
 
 from src.data_loader import load_sales_data
-from src.preprocessing import compare_shapes, preprocess_sales_data, validate_relationships
+from src.output_validation import validate_saved_csv_tables, validate_saved_files
+from src.preprocessing import (
+    compare_shapes,
+    preprocess_sales_data,
+    save_processed_data,
+    validate_relationships,
+    validate_saved_processed_data,
+)
 from src.visualization import setup_korean_font
 
 
@@ -868,13 +875,18 @@ def run_midterm_project(
 
     processed_data = preprocess_sales_data(raw_data)
     processed_path = Path(processed_dir)
-    processed_path.mkdir(parents=True, exist_ok=True)
-    for name, df in processed_data.items():
-        df.to_csv(
-            processed_path / f"{name}_clean.csv",
-            index=False,
-            encoding="utf-8-sig",
-        )
+    save_processed_data(processed_data, processed_path)
+    input_reload_validation = validate_saved_processed_data(
+        processed_data, processed_path
+    )
+    output_report_dir = Path(report_dir)
+    output_report_dir.mkdir(parents=True, exist_ok=True)
+    input_reload_path = output_report_dir / "ch08_input_reload_validation.csv"
+    input_reload_validation.to_csv(
+        input_reload_path, index=False, encoding="utf-8-sig"
+    )
+    if not input_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 08 입력 CSV 재로딩 검증 실패")
 
     preprocessing_comparison = compare_shapes(
         raw_data,
@@ -916,7 +928,6 @@ def run_midterm_project(
         report_dir,
     )
 
-    output_report_dir = Path(report_dir)
     customer_csv = output_report_dir / "ch08_customer_sales.csv"
     _validate_saved_public_customer_csv(customer_csv)
 
@@ -937,6 +948,51 @@ def run_midterm_project(
     report_path = output_report_dir / "ch08_midterm_report.md"
     report_path.write_text(report_text, encoding="utf-8")
 
+    expected_output_tables = {
+        "ch08_dataset_summary.csv": dataset_summary,
+        "ch08_preprocessing_comparison.csv": preprocessing_comparison,
+        "ch08_key_duplicate_checks.csv": key_duplicate_checks,
+        "ch08_relationship_checks.csv": relationship_checks,
+        "ch08_merge_checks.csv": analysis_tables["merge_checks"],
+        "ch08_line_total_check.csv": analysis_tables["line_total_check"],
+        "ch08_date_checks.csv": analysis_tables["date_checks"],
+        "ch08_amount_scope_summary.csv": analysis_tables["amount_scope_summary"],
+        "ch08_total_consistency_check.csv": analysis_tables[
+            "total_consistency_check"
+        ],
+        "ch08_project_validation.csv": project_validation,
+        "ch08_category_sales.csv": analysis_tables["category_sales"],
+        "ch08_monthly_sales.csv": analysis_tables["monthly_sales"],
+        "ch08_customer_sales.csv": analysis_tables["customer_sales_public"],
+        "ch08_order_status_summary.csv": analysis_tables[
+            "order_status_summary"
+        ],
+        "ch08_interpretation_notes.csv": interpretation_notes,
+    }
+    output_reload_validation = validate_saved_csv_tables(
+        {
+            filename: (frame, output_report_dir / filename)
+            for filename, frame in expected_output_tables.items()
+        }
+    )
+    output_reload_path = output_report_dir / "ch08_output_reload_validation.csv"
+    output_reload_validation.to_csv(
+        output_reload_path, index=False, encoding="utf-8-sig"
+    )
+    file_validation = validate_saved_files([*saved_figures, report_path])
+    file_validation_path = output_report_dir / "ch08_file_validation.csv"
+    file_validation.to_csv(
+        file_validation_path, index=False, encoding="utf-8-sig"
+    )
+    if not output_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 08 저장 결과표 재로딩 검증 실패")
+    if not file_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 08 그래프·보고서 파일 검증 실패")
+
+    saved_tables.extend(
+        [input_reload_path, output_reload_path, file_validation_path]
+    )
+
     failed_checks = project_validation.loc[
         project_validation["status"].eq("FAIL"),
         "check",
@@ -956,6 +1012,9 @@ def run_midterm_project(
         "relationship_checks": relationship_checks,
         "analysis_tables": analysis_tables,
         "project_validation": project_validation,
+        "input_reload_validation": input_reload_validation,
+        "output_reload_validation": output_reload_validation,
+        "file_validation": file_validation,
         "interpretation_notes": interpretation_notes,
         "saved_tables": saved_tables,
         "saved_figures": saved_figures,

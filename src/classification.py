@@ -39,6 +39,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from src.output_validation import validate_saved_csv_tables, validate_saved_files
+
 
 TARGET_COLUMN = "is_cancelled"
 ALLOWED_TARGET_STATUSES = {"completed", "cancelled"}
@@ -1398,6 +1400,79 @@ def run_classification_analysis(
         selected_threshold=selected_threshold,
         report_dir=report_dir,
     )
+    internal_columns = [
+        column
+        for column in [
+            "order_id",
+            "customer_id",
+            TARGET_COLUMN,
+            *CANDIDATE_NUMERIC_FEATURES,
+            *CANDIDATE_CATEGORICAL_FEATURES,
+        ]
+        if column in model_data.columns
+    ]
+    output_reload_validation = validate_saved_csv_tables(
+        {
+            "model_data_internal": (
+                model_data[internal_columns],
+                output_paths["model_data_internal"],
+            ),
+            "target_distribution": (
+                target_dist,
+                output_paths["target_distribution"],
+            ),
+            "feature_audit": (feature_audit, output_paths["feature_audit"]),
+            "merge_checks": (merge_checks, output_paths["merge_checks"]),
+            "data_quality_checks": (
+                data_quality_checks,
+                output_paths["data_quality_checks"],
+            ),
+            "split_summary": (split_summary, output_paths["split_summary"]),
+            "validation_comparison": (
+                validation_comparison,
+                output_paths["validation_comparison"],
+            ),
+            "threshold_metrics": (
+                threshold_df,
+                output_paths["threshold_metrics"],
+            ),
+            "test_metrics": (test_metrics, output_paths["test_metrics"]),
+            "predictions_internal": (
+                prediction_result_internal,
+                output_paths["predictions_internal"],
+            ),
+            "predictions": (
+                prediction_result_public,
+                output_paths["predictions"],
+            ),
+            "confusion_matrix": (
+                confusion_df,
+                output_paths["confusion_matrix"],
+                True,
+            ),
+            "classification_report": (
+                report_df,
+                output_paths["classification_report"],
+            ),
+            "validation": (validation, output_paths["validation"]),
+            "checklist": (checklist, output_paths["checklist"]),
+        }
+    )
+    output_reload_path = Path(report_dir) / "ch10_output_reload_validation.csv"
+    output_reload_validation.to_csv(
+        output_reload_path, index=False, encoding="utf-8-sig"
+    )
+    file_validation = validate_saved_files([output_paths["report"]])
+    file_validation_path = Path(report_dir) / "ch10_file_validation.csv"
+    file_validation.to_csv(
+        file_validation_path, index=False, encoding="utf-8-sig"
+    )
+    if not output_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter10 저장 결과표 재로딩 검증 실패")
+    if not file_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter10 보고서 파일 검증 실패")
+    output_paths["output_reload_validation"] = output_reload_path
+    output_paths["file_validation"] = file_validation_path
 
     return {
         "data": data,
@@ -1431,4 +1506,6 @@ def run_classification_analysis(
         "validation": validation,
         "checklist": checklist,
         "output_paths": output_paths,
+        "output_reload_validation": output_reload_validation,
+        "file_validation": file_validation,
     }

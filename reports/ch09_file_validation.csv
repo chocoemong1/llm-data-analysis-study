@@ -1,0 +1,4 @@
+﻿artifact,value,exists,status
+ch09_regression_report.md,bytes=6379,True,PASS
+ch09_actual_vs_predicted.png,bytes=66002,True,PASS
+ch09_residual_histogram.png,bytes=28885,True,PASS

@@ -1,0 +1,5 @@
+﻿artifact,value,exists,status
+ch08_category_sales.png,bytes=35097,True,PASS
+ch08_monthly_sales.png,bytes=85324,True,PASS
+ch08_top_customers.png,bytes=60544,True,PASS
+ch08_midterm_report.md,bytes=9179,True,PASS

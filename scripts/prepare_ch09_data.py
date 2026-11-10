@@ -35,11 +35,14 @@ from src.preprocessing import (  # noqa: E402
     preprocess_sales_data,
     save_processed_data,
     validate_relationships,
+    validate_saved_processed_data,
 )
 
 
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
+REPORT_DIR = PROJECT_ROOT / "reports"
+RELOAD_REPORT_PATH = REPORT_DIR / "ch09_input_reload_validation.csv"
 
 
 def prepare_ch09_data(
@@ -64,11 +67,21 @@ def prepare_ch09_data(
         )
 
     saved_paths = save_processed_data(processed_data, processed_dir)
+    reload_validation = validate_saved_processed_data(
+        processed_data, processed_dir
+    )
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    reload_validation.to_csv(
+        RELOAD_REPORT_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter09 저장 입력 CSV 재로딩 검증 실패")
     return {
         "raw_data": raw_data,
         "processed_data": processed_data,
         "relationship_checks": relationship_checks,
         "saved_paths": saved_paths,
+        "reload_validation": reload_validation,
     }
 
 
@@ -82,6 +95,8 @@ def main() -> None:
     print("\n[저장된 processed 파일]")
     for path in result["saved_paths"]:
         print(f"- {path}")
+    print("\n[저장 후 입력 CSV 재로딩 검증]")
+    print(result["reload_validation"].to_string(index=False))
 
 
 if __name__ == "__main__":

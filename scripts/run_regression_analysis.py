@@ -63,6 +63,12 @@ def main() -> None:
     print("\n[자동 Validation]")
     print(result["validation"].to_string(index=False))
 
+    print("\n[저장 결과표 재로딩 검증]")
+    print(result["output_reload_validation"].to_string(index=False))
+
+    print("\n[그래프·보고서 파일 검증]")
+    print(result["file_validation"].to_string(index=False))
+
     print("\n[내부 예측 오차 상위 10건]")
     print(
         result["prediction_result"]

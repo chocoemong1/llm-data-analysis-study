@@ -37,11 +37,16 @@ from src.eda import (
     run_basic_eda,
     save_eda_outputs,
 )
+from src.output_validation import validate_saved_csv_tables, validate_saved_files
+from src.preprocessing import validate_saved_processed_data
 
 
 PROCESSED_DIR = PROJECT_ROOT / "data/processed"
 REPORT_DIR = PROJECT_ROOT / "reports"
 REPORT_PATH = REPORT_DIR / "ch06_eda_summary.md"
+INPUT_RELOAD_PATH = REPORT_DIR / "ch06_input_reload_validation.csv"
+OUTPUT_RELOAD_PATH = REPORT_DIR / "ch06_output_reload_validation.csv"
+FILE_VALIDATION_PATH = REPORT_DIR / "ch06_file_validation.csv"
 
 
 def main() -> None:
@@ -49,11 +54,47 @@ def main() -> None:
     REPORT_DIR.mkdir(exist_ok=True)
 
     data = load_processed_sales_data(PROCESSED_DIR)
+    input_reload_validation = validate_saved_processed_data(data, PROCESSED_DIR)
+    input_reload_validation.to_csv(
+        INPUT_RELOAD_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not input_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 06 입력 CSV 재로딩 검증 실패")
+
     results = run_basic_eda(data)
     saved_paths = save_eda_outputs(results, REPORT_DIR)
 
+    output_keys = {
+        "ch06_category_sales.csv": "category_sales",
+        "ch06_monthly_sales.csv": "monthly_sales",
+        "ch06_customer_sales.csv": "customer_sales",
+        "ch06_eda_questions.csv": "eda_result_summary",
+        "ch06_customer_city.csv": "customer_city",
+        "ch06_product_category.csv": "product_category",
+        "ch06_payment_sales.csv": "payment_sales",
+        "ch06_merge_checks.csv": "merge_checks",
+        "ch06_total_validation.csv": "total_validation",
+    }
+    output_reload_validation = validate_saved_csv_tables(
+        {
+            filename: (results[key], REPORT_DIR / filename)
+            for filename, key in output_keys.items()
+        }
+    )
+    output_reload_validation.to_csv(
+        OUTPUT_RELOAD_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not output_reload_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 06 저장 산출물 재로딩 검증 실패")
+
     report_text = build_eda_report(results)
     REPORT_PATH.write_text(report_text, encoding="utf-8")
+    file_validation = validate_saved_files([REPORT_PATH])
+    file_validation.to_csv(
+        FILE_VALIDATION_PATH, index=False, encoding="utf-8-sig"
+    )
+    if not file_validation["status"].eq("PASS").all():
+        raise ValueError("Chapter 06 요약 보고서 파일 검증 실패")
 
     print("6장 EDA 완료")
     completed_items = results["completed_items"]
@@ -73,6 +114,12 @@ def main() -> None:
     print(results["payment_sales"].to_string(index=False))
     print("\n[집계 총합 검증]")
     print(results["total_validation"].to_string(index=False))
+    print("\n[입력 CSV 재로딩 검증]")
+    print(input_reload_validation.to_string(index=False))
+    print("\n[저장 산출물 재로딩 검증]")
+    print(output_reload_validation.to_string(index=False))
+    print("\n[요약 보고서 파일 검증]")
+    print(file_validation.to_string(index=False))
     print("\n[저장된 CSV 파일]")
     for path in saved_paths:
         print(f"- {path}")

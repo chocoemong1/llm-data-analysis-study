@@ -1,0 +1,4 @@
+﻿check,rows_before,rows_after,unmatched
+orders merge,745,745,0
+products merge,444,444,0
+customers merge,444,444,0

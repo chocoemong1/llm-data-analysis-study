@@ -1,0 +1,9 @@
+﻿artifact,value,exists,shape_match,columns_match,content_match,status
+model_data_internal,"shape=(300, 11)",True,True,True,True,PASS
+split_summary,"shape=(2, 5)",True,True,True,True,PASS
+feature_audit,"shape=(17, 4)",True,True,True,True,PASS
+cv_summary,"shape=(3, 5)",True,True,True,True,PASS
+model_comparison,"shape=(2, 7)",True,True,True,True,PASS
+predictions_internal,"shape=(56, 7)",True,True,True,True,PASS
+validation,"shape=(6, 3)",True,True,True,True,PASS
+checklist,"shape=(12, 2)",True,True,True,True,PASS

@@ -1,0 +1,5 @@
+﻿check,expected,actual,difference,passed
+category_completed_amount,140888000.0,140888000.0,0.0,True
+product_completed_amount,140888000.0,140888000.0,0.0,True
+customer_completed_amount,140888000.0,140888000.0,0.0,True
+monthly_completed_amount_valid_dates,138985000.0,138985000.0,0.0,True

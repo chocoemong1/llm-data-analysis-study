@@ -1,0 +1,8 @@
+﻿artifact,value,exists,status
+ch07_category_completed_amount_bar.png,bytes=40177,True,PASS
+ch07_monthly_completed_amount_line.png,bytes=82327,True,PASS
+ch07_product_price_hist.png,bytes=22767,True,PASS
+ch07_price_completed_quantity_scatter.png,bytes=49405,True,PASS
+ch07_top_customers_anonymized_barh.png,bytes=41420,True,PASS
+ch07_order_status_bar.png,bytes=30205,True,PASS
+ch07_visualization_summary.md,bytes=3075,True,PASS

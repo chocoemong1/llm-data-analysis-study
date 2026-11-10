@@ -1,0 +1,5 @@
+﻿column,missing_after_conversion,handling
+products.price,4,가격 분포에서 제외하고 상품·주문 관계는 유지
+order_items.quantity,0,분석 가능
+order_items.unit_price,0,분석 가능
+order_items.line_total,0,분석 가능

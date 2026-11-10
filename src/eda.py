@@ -367,6 +367,16 @@ def run_basic_eda(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
         monthly_sales,
         customer_sales,
     )
+    if not merge_checks["unmatched"].eq(0).all():
+        raise ValueError(
+            "Chapter 06 입력 병합에 미매칭 행이 남아 있습니다:\n"
+            + merge_checks.to_string(index=False)
+        )
+    if not total_validation["matches_source"].all():
+        raise ValueError(
+            "Chapter 06 집계 총합 검증에 실패했습니다:\n"
+            + total_validation.to_string(index=False)
+        )
 
     return {
         "questions": make_eda_questions(),
@@ -404,6 +414,8 @@ def save_eda_outputs(
         "customer_city": "ch06_customer_city.csv",
         "product_category": "ch06_product_category.csv",
         "payment_sales": "ch06_payment_sales.csv",
+        "merge_checks": "ch06_merge_checks.csv",
+        "total_validation": "ch06_total_validation.csv",
     }
 
     saved_paths: list[Path] = []

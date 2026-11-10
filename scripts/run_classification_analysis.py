@@ -87,6 +87,12 @@ def main() -> None:
     print("\n[자동 Validation Evidence]")
     print(result["validation"].to_string(index=False))
 
+    print("\n[저장 결과표 재로딩 검증]")
+    print(result["output_reload_validation"].to_string(index=False))
+
+    print("\n[보고서 파일 검증]")
+    print(result["file_validation"].to_string(index=False))
+
     print("\n[공개 Prediction 컬럼]")
     print(result["prediction_result"].columns.tolist())
 
