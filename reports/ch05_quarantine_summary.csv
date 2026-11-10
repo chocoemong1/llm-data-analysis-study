@@ -1,0 +1,6 @@
+﻿reason,quarantined_rows
+orders.customer_id_not_found,2
+order_items.invalid_quantity_or_unit_price,11
+order_items.order_id_not_found,6
+order_items.product_id_not_found,2
+unique_order_items_quarantined_total,18

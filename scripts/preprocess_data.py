@@ -35,8 +35,10 @@ from src.preprocessing import (
     build_preprocessing_report,
     compare_shapes,
     duplicate_summary,
-    preprocess_sales_data,
+    preprocess_sales_data_with_audit,
     save_processed_data,
+    save_quarantine_data,
+    validate_saved_processed_data,
     validate_relationships,
 )
 
@@ -45,6 +47,9 @@ RAW_DIR = PROJECT_ROOT / "practice/chapter05/data/raw"
 PROCESSED_DIR = PROJECT_ROOT / "data/processed"
 REPORT_DIR = PROJECT_ROOT / "reports"
 REPORT_PATH = REPORT_DIR / "ch05_preprocessing_summary.md"
+QUARANTINE_DIR = PROCESSED_DIR / "quarantine"
+QUARANTINE_REPORT_PATH = REPORT_DIR / "ch05_quarantine_summary.csv"
+RELOAD_REPORT_PATH = REPORT_DIR / "ch05_reload_validation.csv"
 
 
 def main() -> None:
@@ -52,7 +57,9 @@ def main() -> None:
     REPORT_DIR.mkdir(exist_ok=True)
 
     raw_data = load_sales_data(RAW_DIR)
-    processed_data = preprocess_sales_data(raw_data)
+    processed_data, quarantine, quarantine_summary = (
+        preprocess_sales_data_with_audit(raw_data)
+    )
 
     comparison = compare_shapes(raw_data, processed_data)
     duplicate_checks = duplicate_summary(
@@ -67,10 +74,37 @@ def main() -> None:
     relationship_checks = validate_relationships(processed_data)
 
     saved_paths = save_processed_data(processed_data, PROCESSED_DIR)
+    quarantine_paths = save_quarantine_data(quarantine, QUARANTINE_DIR)
+    reload_validation = validate_saved_processed_data(
+        expected_data=processed_data,
+        output_dir=PROCESSED_DIR,
+    )
+    quarantine_summary.to_csv(
+        QUARANTINE_REPORT_PATH, index=False, encoding="utf-8-sig"
+    )
+    reload_validation.to_csv(
+        RELOAD_REPORT_PATH, index=False, encoding="utf-8-sig"
+    )
+
+    if not relationship_checks["invalid_count"].eq(0).all():
+        raise ValueError(
+            "전처리 후 FK 검증 실패:\n"
+            + relationship_checks.to_string(index=False)
+        )
+    if not reload_validation["status"].eq("PASS").all():
+        raise ValueError(
+            "저장 후 CSV 재로딩 검증 실패:\n"
+            + reload_validation.loc[
+                reload_validation["status"].ne("PASS")
+            ].to_string(index=False)
+        )
+
     report_text = build_preprocessing_report(
         raw_data=raw_data,
         processed_data=processed_data,
         relationship_checks=relationship_checks,
+        quarantine_summary=quarantine_summary,
+        reload_validation=reload_validation,
     )
     REPORT_PATH.write_text(report_text, encoding="utf-8")
 
@@ -82,9 +116,18 @@ def main() -> None:
     print(duplicate_checks.to_string(index=False))
     print("\n[파일 간 관계 점검 결과]")
     print(relationship_checks.to_string(index=False))
+    print("\n[관계 불일치 보류 결과]")
+    print(quarantine_summary.to_string(index=False))
+    print("\n[저장 후 CSV 재로딩 검증]")
+    print(reload_validation.to_string(index=False))
     print("\n[저장된 전처리 파일]")
     for path in saved_paths:
         print(f"- {path}")
+    print("\n[보류 데이터 파일]")
+    for path in quarantine_paths:
+        print(f"- {path}")
+    print(f"\n[보류 요약] {QUARANTINE_REPORT_PATH}")
+    print(f"[재로딩 검증] {RELOAD_REPORT_PATH}")
     print(f"\n[요약 보고서] {REPORT_PATH}")
 
 

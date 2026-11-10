@@ -30,3 +30,6 @@ reports/ch09_regression_predictions_internal.csv
 # Chapter 10 internal diagnostics containing source identifiers
 reports/ch10_classification_model_data_internal.csv
 reports/ch10_classification_predictions_internal.csv
+
+# Chapter 05 relationship-review rows contain source identifiers; keep local.
+data/processed/quarantine/

@@ -165,14 +165,24 @@ def preprocess_products(df: pd.DataFrame) -> pd.DataFrame:
     처리 내용:
     - 문자열 앞뒤 공백 제거
     - price 숫자형 변환
-    - price가 0 이하인 행 제외
+    - 변환 실패·0 이하 price는 검토 대상으로 표시하고 결측 처리
+    - 상품 행은 유지하여 order_items와의 참조 관계를 보존
     - 완전 중복 행 제거
     """
     result = strip_string_columns(df)
 
     if "price" in result.columns:
-        result["price"] = to_number(result["price"])
-        result = result[result["price"] > 0]
+        converted_price = to_number(result["price"])
+        conversion_failed = result["price"].notna() & converted_price.isna()
+        nonpositive = converted_price.notna() & converted_price.le(0)
+
+        result["price"] = converted_price
+        price_issue = conversion_failed | nonpositive
+        if price_issue.any():
+            result["price_quality_status"] = "valid"
+            result.loc[conversion_failed, "price_quality_status"] = "conversion_failed"
+            result.loc[nonpositive, "price_quality_status"] = "nonpositive_review"
+            result.loc[price_issue, "price"] = float("nan")
 
     return result.drop_duplicates()
 
@@ -226,14 +236,116 @@ def preprocess_order_items(df: pd.DataFrame) -> pd.DataFrame:
     return result.drop_duplicates()
 
 
-def preprocess_sales_data(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
-    """쇼핑몰 실습 데이터 4종을 한 번에 전처리합니다."""
-    return {
+def preprocess_sales_data_with_audit(
+    data: dict[str, pd.DataFrame],
+) -> tuple[
+    dict[str, pd.DataFrame],
+    dict[str, pd.DataFrame],
+    pd.DataFrame,
+]:
+    """데이터를 전처리하고 관계 불일치 행을 별도 보류합니다.
+
+    원본에 이미 존재하는 FK 불일치를 임의 값으로 채우지 않습니다. 분석용 clean
+    테이블에서는 제외하되, 원인 확인이 가능하도록 quarantine DataFrame과 건수
+    Evidence를 함께 반환합니다.
+    """
+    raw_items_for_audit = strip_string_columns(data["order_items"]).drop_duplicates()
+    audit_quantity = to_number(raw_items_for_audit["quantity"])
+    audit_unit_price = to_number(raw_items_for_audit["unit_price"])
+    invalid_item_value = (
+        audit_quantity.isna()
+        | audit_unit_price.isna()
+        | audit_quantity.le(0)
+        | audit_unit_price.le(0)
+    )
+    value_quarantine = raw_items_for_audit.loc[invalid_item_value].copy()
+    value_quarantine["quantity"] = audit_quantity.loc[invalid_item_value]
+    value_quarantine["unit_price"] = audit_unit_price.loc[invalid_item_value]
+    value_quarantine["quarantine_reason"] = "invalid_quantity_or_unit_price"
+
+    processed = {
         "customers": preprocess_customers(data["customers"]),
         "products": preprocess_products(data["products"]),
         "orders": preprocess_orders(data["orders"]),
         "order_items": preprocess_order_items(data["order_items"]),
     }
+
+    invalid_customer = ~processed["orders"]["customer_id"].isin(
+        processed["customers"]["customer_id"]
+    )
+    orders_quarantine = processed["orders"].loc[invalid_customer].copy()
+    orders_quarantine["quarantine_reason"] = "customer_id_not_found"
+    processed["orders"] = processed["orders"].loc[~invalid_customer].copy()
+
+    invalid_order = ~processed["order_items"]["order_id"].isin(
+        processed["orders"]["order_id"]
+    )
+    invalid_product = ~processed["order_items"]["product_id"].isin(
+        processed["products"]["product_id"]
+    )
+    item_quarantine_mask = invalid_order | invalid_product
+    order_items_quarantine = processed["order_items"].loc[
+        item_quarantine_mask
+    ].copy()
+    order_items_quarantine["quarantine_reason"] = [
+        ";".join(
+            reason
+            for condition, reason in [
+                (order_bad, "order_id_not_found"),
+                (product_bad, "product_id_not_found"),
+            ]
+            if condition
+        )
+        for order_bad, product_bad in zip(
+            invalid_order.loc[item_quarantine_mask],
+            invalid_product.loc[item_quarantine_mask],
+        )
+    ]
+    processed["order_items"] = processed["order_items"].loc[
+        ~item_quarantine_mask
+    ].copy()
+
+    order_items_quarantine = pd.concat(
+        [value_quarantine, order_items_quarantine],
+        ignore_index=True,
+        sort=False,
+    ).drop_duplicates(subset=["order_item_id"], keep="first")
+
+    quarantine = {
+        "orders": orders_quarantine,
+        "order_items": order_items_quarantine,
+    }
+    quarantine_summary = pd.DataFrame(
+        [
+            {
+                "reason": "orders.customer_id_not_found",
+                "quarantined_rows": int(invalid_customer.sum()),
+            },
+            {
+                "reason": "order_items.invalid_quantity_or_unit_price",
+                "quarantined_rows": int(invalid_item_value.sum()),
+            },
+            {
+                "reason": "order_items.order_id_not_found",
+                "quarantined_rows": int(invalid_order.sum()),
+            },
+            {
+                "reason": "order_items.product_id_not_found",
+                "quarantined_rows": int(invalid_product.sum()),
+            },
+            {
+                "reason": "unique_order_items_quarantined_total",
+                "quarantined_rows": len(order_items_quarantine),
+            },
+        ]
+    )
+    return processed, quarantine, quarantine_summary
+
+
+def preprocess_sales_data(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
+    """쇼핑몰 실습 데이터 4종을 전처리하고 FK 일관성을 확보합니다."""
+    processed, _, _ = preprocess_sales_data_with_audit(data)
+    return processed
 
 
 def validate_relationships(data: dict[str, pd.DataFrame]) -> pd.DataFrame:
@@ -302,10 +414,135 @@ def save_processed_data(
     return saved_paths
 
 
+def save_quarantine_data(
+    quarantine: dict[str, pd.DataFrame],
+    output_dir: str | Path = "data/processed/quarantine",
+    encoding: str = "utf-8-sig",
+) -> list[Path]:
+    """clean에서 제외한 값·관계 검토 행을 별도 CSV로 저장합니다."""
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    file_map = {
+        "orders": "orders_quarantine.csv",
+        "order_items": "order_items_quarantine.csv",
+    }
+    saved_paths = []
+    for name, filename in file_map.items():
+        path = output_path / filename
+        quarantine[name].to_csv(path, index=False, encoding=encoding)
+        saved_paths.append(path)
+    return saved_paths
+
+
+def load_saved_processed_data(
+    output_dir: str | Path = "data/processed",
+) -> dict[str, pd.DataFrame]:
+    """저장된 clean CSV 4개를 새 DataFrame으로 다시 읽습니다."""
+    output_path = Path(output_dir)
+    file_map = {
+        "customers": "customers_clean.csv",
+        "products": "products_clean.csv",
+        "orders": "orders_clean.csv",
+        "order_items": "order_items_clean.csv",
+    }
+    return {
+        name: pd.read_csv(output_path / filename)
+        for name, filename in file_map.items()
+    }
+
+
+def validate_saved_processed_data(
+    expected_data: dict[str, pd.DataFrame],
+    output_dir: str | Path = "data/processed",
+) -> pd.DataFrame:
+    """CSV 재로딩 후 구조·키·날짜·계산·FK를 검증합니다."""
+    reloaded = load_saved_processed_data(output_dir)
+    rows: list[dict[str, object]] = []
+
+    key_columns = {
+        "customers": "customer_id",
+        "products": "product_id",
+        "orders": "order_id",
+        "order_items": "order_item_id",
+    }
+    for name, expected in expected_data.items():
+        actual = reloaded[name]
+        rows.extend(
+            [
+                {
+                    "check": f"{name}.shape",
+                    "value": str(actual.shape),
+                    "status": "PASS" if actual.shape == expected.shape else "FAIL",
+                },
+                {
+                    "check": f"{name}.columns",
+                    "value": len(actual.columns),
+                    "status": "PASS"
+                    if list(actual.columns) == list(expected.columns)
+                    else "FAIL",
+                },
+                {
+                    "check": f"{name}.{key_columns[name]}_unique_nonnull",
+                    "value": int(
+                        actual[key_columns[name]].duplicated().sum()
+                        + actual[key_columns[name]].isna().sum()
+                    ),
+                    "status": "PASS"
+                    if actual[key_columns[name]].is_unique
+                    and actual[key_columns[name]].notna().all()
+                    else "FAIL",
+                },
+            ]
+        )
+
+    for name, column in [
+        ("customers", "signup_date"),
+        ("orders", "order_date"),
+    ]:
+        source = reloaded[name][column]
+        new_failures = int(
+            (source.notna() & pd.to_datetime(source, errors="coerce").isna()).sum()
+        )
+        rows.append(
+            {
+                "check": f"{name}.{column}_reload_parse",
+                "value": new_failures,
+                "status": "PASS" if new_failures == 0 else "FAIL",
+            }
+        )
+
+    formula_mismatch = int(
+        (
+            reloaded["order_items"]["line_total"]
+            != reloaded["order_items"]["quantity"]
+            * reloaded["order_items"]["unit_price"]
+        ).sum()
+    )
+    rows.append(
+        {
+            "check": "order_items.line_total_formula",
+            "value": formula_mismatch,
+            "status": "PASS" if formula_mismatch == 0 else "FAIL",
+        }
+    )
+
+    for row in validate_relationships(reloaded).to_dict("records"):
+        rows.append(
+            {
+                "check": "reload_fk:" + str(row["check"]),
+                "value": int(row["invalid_count"]),
+                "status": "PASS" if int(row["invalid_count"]) == 0 else "FAIL",
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def build_preprocessing_report(
     raw_data: dict[str, pd.DataFrame],
     processed_data: dict[str, pd.DataFrame],
     relationship_checks: pd.DataFrame,
+    quarantine_summary: pd.DataFrame | None = None,
+    reload_validation: pd.DataFrame | None = None,
 ) -> str:
     """전처리 결과 요약 Markdown 문자열을 생성합니다."""
     comparison = compare_shapes(raw_data, processed_data)
@@ -317,6 +554,17 @@ def build_preprocessing_report(
             "orders": "order_id",
             "order_items": "order_item_id",
         },
+    )
+
+    quarantine_text = (
+        quarantine_summary.to_string(index=False)
+        if quarantine_summary is not None
+        else "기록 없음"
+    )
+    reload_text = (
+        reload_validation.to_string(index=False)
+        if reload_validation is not None
+        else "기록 없음"
     )
 
     return f"""# Chapter 5 데이터 전처리 요약
@@ -346,6 +594,18 @@ def build_preprocessing_report(
 {relationship_checks.to_string(index=False)}
 ```
 
+## 관계 불일치 보류 결과
+
+```text
+{quarantine_text}
+```
+
+## 저장 후 CSV 재로딩 검증
+
+```text
+{reload_text}
+```
+
 ## 주요 처리 내용
 
 - 원본 데이터는 직접 수정하지 않고 복사본을 사용했습니다.
@@ -355,7 +615,9 @@ def build_preprocessing_report(
 - 주문 상태값 표기를 completed, cancelled, refunded 중심으로 통일했습니다.
 - 날짜 컬럼을 날짜형으로 변환하고 주문 월/요일 파생 컬럼을 만들었습니다.
 - 가격, 수량, 단가를 숫자형으로 변환했습니다.
-- 0 이하 가격, 수량, 단가는 정상 분석 대상에서 제외했습니다.
+- 변환 실패·0 이하 상품 가격은 상품 행을 삭제하지 않고 검토 상태로 남겼습니다.
+- 관계 불일치 주문·주문상세는 clean 데이터에서 제외하고 quarantine에 보존했습니다.
+- 저장된 CSV를 다시 읽어 구조·키·날짜·계산식·FK를 검증했습니다.
 - 주문 상세 금액 line_total 파생 컬럼을 생성했습니다.
 - 전처리 후 파일 간 키 관계를 다시 확인했습니다.
 
