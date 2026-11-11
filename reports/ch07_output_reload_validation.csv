@@ -6,3 +6,4 @@ ch07_customer_sales.csv,"shape=(98, 4)",True,True,True,True,PASS
 ch07_order_status.csv,"shape=(3, 2)",True,True,True,True,PASS
 ch07_visualization_validation.csv,"shape=(4, 5)",True,True,True,True,PASS
 ch07_numeric_quality.csv,"shape=(4, 3)",True,True,True,True,PASS
+ch07_line_total_validation.csv,"shape=(1, 4)",True,True,True,True,PASS

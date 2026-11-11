@@ -104,11 +104,35 @@ def prepare_visualization_data(
     ]:
         dataframe[column] = pd.to_numeric(dataframe[column], errors="coerce")
 
+    expected_line_total = order_items["quantity"] * order_items["unit_price"]
     if "line_total" not in order_items.columns:
-        order_items["line_total"] = order_items["quantity"] * order_items["unit_price"]
+        order_items["line_total"] = expected_line_total
     else:
         order_items["line_total"] = pd.to_numeric(
             order_items["line_total"], errors="coerce"
+        )
+    line_total_mismatch = (
+        order_items["line_total"] - expected_line_total
+    ).abs().gt(1e-6) | order_items[
+        ["quantity", "unit_price", "line_total"]
+    ].isna().any(axis=1)
+    line_total_validation = pd.DataFrame(
+        [
+            {
+                "check": "line_total = quantity × unit_price",
+                "checked_rows": len(order_items),
+                "mismatch_count": int(line_total_mismatch.sum()),
+                "status": (
+                    "PASS" if not line_total_mismatch.any() else "FAIL"
+                ),
+            }
+        ]
+    )
+    if line_total_mismatch.any():
+        raise ValueError(
+            "시각화 입력 line_total 검증 실패: "
+            f"전체 {len(order_items)}행 중 "
+            f"{int(line_total_mismatch.sum())}행 불일치"
         )
 
     numeric_failures = {
@@ -310,6 +334,7 @@ def prepare_visualization_data(
         "unmatched_products": unmatched_products,
         "visualization_validation": validation,
         "numeric_quality": numeric_quality,
+        "line_total_validation": line_total_validation,
     }
 
 
@@ -489,6 +514,7 @@ def save_visualization_tables(
         "ch07_order_status.csv": data["order_status"],
         "ch07_visualization_validation.csv": data["visualization_validation"],
         "ch07_numeric_quality.csv": data["numeric_quality"],
+        "ch07_line_total_validation.csv": data["line_total_validation"],
     }
     saved: dict[str, tuple[pd.DataFrame, Path]] = {}
     for filename, frame in table_map.items():

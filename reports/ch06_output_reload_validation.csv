@@ -8,3 +8,4 @@ ch06_product_category.csv,"shape=(10, 3)",True,True,True,True,PASS
 ch06_payment_sales.csv,"shape=(4, 4)",True,True,True,True,PASS
 ch06_merge_checks.csv,"shape=(3, 4)",True,True,True,True,PASS
 ch06_total_validation.csv,"shape=(4, 3)",True,True,True,True,PASS
+ch06_line_total_validation.csv,"shape=(1, 4)",True,True,True,True,PASS

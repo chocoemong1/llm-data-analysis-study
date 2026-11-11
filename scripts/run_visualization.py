@@ -81,6 +81,8 @@ def main() -> None:
 
     print("\n[시각화용 집계 검증]")
     print(data["visualization_validation"].to_string(index=False))
+    print("\n[line_total 전체 행 검증]")
+    print(data["line_total_validation"].to_string(index=False))
     print("\n[숫자형 품질과 처리 기준]")
     print(data["numeric_quality"].to_string(index=False))
     print("주문 정보 미매칭 주문 상세:", len(data["unmatched_orders"]))

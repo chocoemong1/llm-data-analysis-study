@@ -3,6 +3,7 @@ binary_target_rows,248
 completed_rows,184
 cancelled_rows,64
 excluded_status_rows,52
+line_total_checked_rows,764
 line_total_mismatch,0
 negative_days_since_signup,45
 missing_order_item_features,0

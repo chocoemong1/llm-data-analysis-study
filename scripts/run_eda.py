@@ -74,6 +74,7 @@ def main() -> None:
         "ch06_payment_sales.csv": "payment_sales",
         "ch06_merge_checks.csv": "merge_checks",
         "ch06_total_validation.csv": "total_validation",
+        "ch06_line_total_validation.csv": "line_total_validation",
     }
     output_reload_validation = validate_saved_csv_tables(
         {
@@ -104,6 +105,8 @@ def main() -> None:
     print(f"completed 주문 기준 금액: {completed_items['line_total'].sum():.0f}")
     print("\n[병합 검증]")
     print(results["merge_checks"].to_string(index=False))
+    print("\n[line_total 전체 행 검증]")
+    print(results["line_total_validation"].to_string(index=False))
     print("\n[카테고리별 매출 상위 5개]")
     print(results["category_sales"].head().to_string(index=False))
     print("\n[월별 매출]")

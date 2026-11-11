@@ -16,7 +16,14 @@ analysis_area                            question         metric                
         고객 가치 completed 주문 기준 구매 금액이 높은 고객은 누구인가? 고객별 총매출, 주문 횟수 customers, orders, order_items
 ```
 
-## 3. 카테고리별 매출 요약
+## 3. line_total 전체 행 검증
+
+```text
+                             check  checked_rows  mismatch_count status
+line_total = quantity × unit_price           745               0   PASS
+```
+
+## 4. 카테고리별 매출 요약
 
 ```text
 category  total_quantity  total_sales  sales_ratio
@@ -32,7 +39,7 @@ category  total_quantity  total_sales  sales_ratio
    전자 기기             5.0     105000.0         0.07
 ```
 
-## 4. 월별 매출 요약
+## 5. 월별 매출 요약
 
 ```text
 order_month  total_sales  order_count  avg_order_value
@@ -54,7 +61,7 @@ order_month  total_sales  order_count  avg_order_value
     Unknown    1903000.0            2         951500.0
 ```
 
-## 5. 고객별 구매 금액 상위 10명
+## 6. 고객별 구매 금액 상위 10명
 
 ```text
  customer_id city  order_count  total_sales  avg_order_value
@@ -70,7 +77,7 @@ order_month  total_sales  order_count  avg_order_value
           22   부산            3    3109000.0        1036333.0
 ```
 
-## 6. 결제수단별 completed 주문 요약
+## 7. 결제수단별 completed 주문 요약
 
 ```text
 payment_method  order_count  total_sales  avg_order_value
@@ -80,7 +87,7 @@ payment_method  order_count  total_sales  avg_order_value
      naver_pay           39   27024000.0         692923.0
 ```
 
-## 7. 추가 분석 질문
+## 8. 추가 분석 질문
 
 ```text
               question     result_table              next_question
@@ -91,7 +98,7 @@ payment_method  order_count  total_sales  avg_order_value
    구매 금액이 높은 고객은 누구인가?   customer_sales      고액 구매 고객은 반복 구매 고객인가?
 ```
 
-## 8. completed Gate와 병합 검증
+## 9. completed Gate와 병합 검증
 
 ```text
           check  rows_before  rows_after  unmatched
@@ -100,7 +107,7 @@ payment_method  order_count  total_sales  avg_order_value
 customers merge          444         444          0
 ```
 
-## 9. 집계 총합 검증
+## 10. 집계 총합 검증
 
 ```text
 aggregation  total_sales  matches_source
@@ -110,7 +117,7 @@ aggregation  total_sales  matches_source
    customer  140888000.0            True
 ```
 
-## 10. 해석 시 주의사항
+## 11. 해석 시 주의사항
 
 - EDA 결과는 최종 결론이 아니라 추가 분석을 위한 관찰 결과입니다.
 - 매출이 높은 카테고리가 반드시 선호도가 높은 카테고리라는 뜻은 아닙니다.

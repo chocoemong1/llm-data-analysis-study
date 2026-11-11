@@ -54,10 +54,61 @@ def prepare_eda_data(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
         if "order_dayofweek" not in orders.columns:
             orders["order_dayofweek"] = orders["order_date"].dt.day_name()
 
-    if "line_total" not in order_items.columns and {"quantity", "unit_price"}.issubset(order_items.columns):
-        order_items["line_total"] = order_items["quantity"] * order_items["unit_price"]
+    if {"quantity", "unit_price"}.issubset(order_items.columns):
+        order_items["quantity"] = pd.to_numeric(
+            order_items["quantity"], errors="coerce"
+        )
+        order_items["unit_price"] = pd.to_numeric(
+            order_items["unit_price"], errors="coerce"
+        )
+        expected_line_total = (
+            order_items["quantity"] * order_items["unit_price"]
+        )
+        if "line_total" not in order_items.columns:
+            order_items["line_total"] = expected_line_total
+        else:
+            order_items["line_total"] = pd.to_numeric(
+                order_items["line_total"], errors="coerce"
+            )
+            mismatch = (
+                order_items["line_total"] - expected_line_total
+            ).abs().gt(1e-6) | order_items[
+                ["quantity", "unit_price", "line_total"]
+            ].isna().any(axis=1)
+            if mismatch.any():
+                raise ValueError(
+                    "Chapter 06 line_total 검증 실패: "
+                    f"전체 {len(order_items)}행 중 {int(mismatch.sum())}행 불일치"
+                )
 
     return prepared
+
+
+def build_line_total_validation(order_items: pd.DataFrame) -> pd.DataFrame:
+    """기존 line_total을 전체 행에서 quantity × unit_price와 비교합니다."""
+    required = {"quantity", "unit_price", "line_total"}
+    missing = sorted(required - set(order_items.columns))
+    if missing:
+        raise KeyError(f"line_total 검증에 필요한 컬럼이 없습니다: {missing}")
+
+    quantity = pd.to_numeric(order_items["quantity"], errors="coerce")
+    unit_price = pd.to_numeric(order_items["unit_price"], errors="coerce")
+    actual = pd.to_numeric(order_items["line_total"], errors="coerce")
+    expected = quantity * unit_price
+    mismatch = actual.sub(expected).abs().gt(1e-6) | pd.concat(
+        [quantity, unit_price, actual], axis=1
+    ).isna().any(axis=1)
+    mismatch_count = int(mismatch.sum())
+    return pd.DataFrame(
+        [
+            {
+                "check": "line_total = quantity × unit_price",
+                "checked_rows": len(order_items),
+                "mismatch_count": mismatch_count,
+                "status": "PASS" if mismatch_count == 0 else "FAIL",
+            }
+        ]
+    )
 
 
 def make_eda_questions() -> pd.DataFrame:
@@ -351,6 +402,12 @@ def run_basic_eda(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
     products = prepared["products"]
     orders = prepared["orders"]
     order_items = prepared["order_items"]
+    line_total_validation = build_line_total_validation(order_items)
+    if not line_total_validation["status"].eq("PASS").all():
+        raise ValueError(
+            "Chapter 06 line_total 전체 행 검증에 실패했습니다:\n"
+            + line_total_validation.to_string(index=False)
+        )
 
     completed_items = build_completed_order_items(orders, order_items)
     category_sales = category_sales_summary(products, completed_items)
@@ -380,6 +437,7 @@ def run_basic_eda(data: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
 
     return {
         "questions": make_eda_questions(),
+        "line_total_validation": line_total_validation,
         "customer_city": customer_city_summary(customers),
         "customer_gender": customer_gender_summary(customers),
         "product_category": product_category_summary(products),
@@ -416,6 +474,7 @@ def save_eda_outputs(
         "payment_sales": "ch06_payment_sales.csv",
         "merge_checks": "ch06_merge_checks.csv",
         "total_validation": "ch06_total_validation.csv",
+        "line_total_validation": "ch06_line_total_validation.csv",
     }
 
     saved_paths: list[Path] = []
@@ -435,6 +494,7 @@ def build_eda_report(results: dict[str, pd.DataFrame]) -> str:
     customer_sales = results["customer_sales"]
     payment_sales = results["payment_sales"]
     merge_checks = results["merge_checks"]
+    line_total_validation = results["line_total_validation"]
     total_validation = results["total_validation"]
     summary = results["eda_result_summary"]
 
@@ -450,49 +510,55 @@ def build_eda_report(results: dict[str, pd.DataFrame]) -> str:
 {questions.to_string(index=False)}
 ```
 
-## 3. 카테고리별 매출 요약
+## 3. line_total 전체 행 검증
+
+```text
+{line_total_validation.to_string(index=False)}
+```
+
+## 4. 카테고리별 매출 요약
 
 ```text
 {category_sales.head(10).to_string(index=False)}
 ```
 
-## 4. 월별 매출 요약
+## 5. 월별 매출 요약
 
 ```text
 {monthly_sales.to_string(index=False)}
 ```
 
-## 5. 고객별 구매 금액 상위 10명
+## 6. 고객별 구매 금액 상위 10명
 
 ```text
 {customer_sales.head(10).to_string(index=False)}
 ```
 
-## 6. 결제수단별 completed 주문 요약
+## 7. 결제수단별 completed 주문 요약
 
 ```text
 {payment_sales.to_string(index=False)}
 ```
 
-## 7. 추가 분석 질문
+## 8. 추가 분석 질문
 
 ```text
 {summary.to_string(index=False)}
 ```
 
-## 8. completed Gate와 병합 검증
+## 9. completed Gate와 병합 검증
 
 ```text
 {merge_checks.to_string(index=False)}
 ```
 
-## 9. 집계 총합 검증
+## 10. 집계 총합 검증
 
 ```text
 {total_validation.to_string(index=False)}
 ```
 
-## 10. 해석 시 주의사항
+## 11. 해석 시 주의사항
 
 - EDA 결과는 최종 결론이 아니라 추가 분석을 위한 관찰 결과입니다.
 - 매출이 높은 카테고리가 반드시 선호도가 높은 카테고리라는 뜻은 아닙니다.
