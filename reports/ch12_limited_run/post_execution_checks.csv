@@ -1,0 +1,12 @@
+﻿check,observed,status
+input item rows,764,PASS
+completed detail rows,474,PASS
+order/product unmatched,0,PASS
+line_total relation,all rows,PASS
+source total,148990000.0,PASS
+category grouped total,148990000.0,PASS
+monthly grouped total,148990000.0,PASS
+matches official category/monthly,True/True,PASS
+processed inputs preserved,True,PASS
+outside allowlist changes,0,PASS
+secret-like text in logs,False,PASS

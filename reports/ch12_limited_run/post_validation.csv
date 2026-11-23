@@ -1,0 +1,10 @@
+﻿check,value,status
+input_item_rows,764.0,PASS
+order_merge_unmatched,0.0,PASS
+completed_detail_rows,474.0,PASS
+product_merge_unmatched,0.0,PASS
+category_missing,0.0,PASS
+order_date_failures,0.0,PASS
+completed_source_total,148990000.0,PASS
+category_grouped_total,148990000.0,PASS
+monthly_grouped_total,148990000.0,PASS

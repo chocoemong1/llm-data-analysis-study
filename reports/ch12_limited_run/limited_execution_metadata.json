@@ -1,0 +1,22 @@
+{
+  "candidate_sha256": "c8c4ef5badf5a408ac449c398ff3b08b3a5998d765fc659d613dde9684adb728",
+  "python_version": "3.12.3",
+  "pandas_version": "3.0.5",
+  "start_utc": "2026-11-23T09:34:31.654364+00:00",
+  "end_utc": "2026-11-23T09:34:32.207068+00:00",
+  "duration_seconds": 0.553,
+  "exit_code": 0,
+  "timeout": false,
+  "sanitized_environment": true,
+  "input_copies_read_only": true,
+  "write_allowlist": "reports/ch12_limited_run",
+  "network_policy": "no network call in reviewed code; OS egress not independently blocked",
+  "created_files": [
+    "category_sales.csv",
+    "execution_summary.json",
+    "monthly_sales.csv",
+    "post_validation.csv"
+  ],
+  "modified_or_deleted_outside_allowlist": [],
+  "processed_inputs_preserved": true
+}

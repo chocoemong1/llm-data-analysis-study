@@ -1,0 +1,2 @@
+﻿original_code_ref,llm_suggestion_summary,human_change,reason,reviewer,reviewed_at,execution_approved
+DEFAULT_STATIC_SCAN_EXAMPLE,external download and direct file write,replaced with pure in-memory validated aggregation (c8c4ef5badf5),"high network/file-write findings; add PK/FK, merge, formula and total checks",본인,2026-11-23T09:34:31.446035+00:00,True

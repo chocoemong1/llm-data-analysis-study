@@ -1,0 +1,13 @@
+{
+  "input_rows": {
+    "products": 100,
+    "orders": 300,
+    "order_items": 764
+  },
+  "output_rows": {
+    "category_sales": 7,
+    "monthly_sales": 13,
+    "post_validation": 9
+  },
+  "all_checks_pass": true
+}
